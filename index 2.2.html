@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#152433">
+<title>重生之我是蕭老思的學生｜911 辦公室</title>
+<style>
+:root{
+  --bg:#142230;
+  --panel:#203246;
+  --panel-2:#29435d;
+  --line:#0a1621;
+  --cream:#fff5dd;
+  --gold:#f1d28d;
+  --gold-2:#cfaa63;
+  --sky:#98c4d0;
+  --leaf:#5f866b;
+  --stone:#d5c4a0;
+  --muted:#aac1c5;
+  --ok:#6ea583;
+  --warn:#eab47a;
+  --danger:#d76d6a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--cream);font-family:ui-monospace,"Cascadia Mono","Cascadia Code","SFMono-Regular","Noto Sans TC","Microsoft JhengHei",monospace;overscroll-behavior:none}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid #ffe39a;outline-offset:2px}
+.pixel{image-rendering:pixelated;shape-rendering:crispEdges}
+.hidden{display:none!important}
+.app{height:100dvh;display:flex;align-items:center;justify-content:center;padding:14px;background:radial-gradient(circle at 50% 15%,#3a5569 0,#192737 45%,#0c141d 100%)}
+.game{width:min(1160px,100%);height:min(840px,100%);position:relative;overflow:hidden;border:5px solid #0b1722;box-shadow:0 0 0 3px #b79a6c,0 18px 60px rgba(0,0,0,.45);background:#34495a}
+.game::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 25%),linear-gradient(0deg,rgba(0,0,0,.10),transparent 20%);mix-blend-mode:screen}
+.screen{position:absolute;inset:0;display:none}
+.screen.active{display:block;animation:fadeIn .34s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.topbar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(180deg,rgba(14,24,34,.92),rgba(16,28,41,.85));border-bottom:3px solid var(--gold-2);backdrop-filter:blur(2px)}
+.brand{font-weight:900;font-size:clamp(13px,1.8vw,21px);letter-spacing:1px;text-shadow:2px 2px 0 #09111a}
+.sub{font-size:12px;color:#d9c7a3}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tool,.primary,.secondary,.choice,.close{border:2px solid #cdb584;border-radius:0;box-shadow:3px 3px 0 #0a1520;background:#38536a;color:#fff8e7;min-height:40px}
+.tool{padding:6px 10px}
+.tool:hover,.primary:hover,.secondary:hover,.choice:hover,.close:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.primary{padding:10px 20px;background:linear-gradient(180deg,#f4ddab,#dcc07f);color:#223245;font-weight:900;border-color:#fff0c6;box-shadow:4px 4px 0 #101926}
+.primary:disabled{opacity:.6;transform:none;cursor:default}
+.secondary{padding:9px 14px;background:#435e76;border-color:#abb8bd}
+/* intro */
+#intro{background:#91bbc7}
+#intro .scene-art,#office .scene-art{position:absolute;inset:0}
+#intro svg,#office svg{width:100%;height:100%;display:block}
+#office .office-drawing{shape-rendering:geometricPrecision}
+.intro-title{position:absolute;top:6%;left:0;right:0;z-index:5;text-align:center;padding:0 10px;font-size:clamp(26px,5.1vw,58px);font-weight:900;letter-spacing:3px;color:#fff0c7;text-shadow:0 4px 0 #314757,0 8px 0 rgba(26,42,53,.75)}
+.intro-title small{display:block;margin-bottom:12px;font-size:clamp(12px,1.9vw,18px);letter-spacing:4px;color:#ffdf9e;text-shadow:0 2px 0 #314757}
+.intro-box{position:absolute;left:50%;bottom:9.5%;transform:translate(-50%,26px);z-index:6;width:min(720px,92%);background:rgba(23,37,50,.95);border:4px solid #f3d999;box-shadow:0 0 0 3px #152433,8px 8px 0 rgba(7,16,24,.8);padding:22px 24px 20px;text-align:center;opacity:0;animation:introRise .9s .55s forwards}
+@keyframes introRise{to{opacity:1;transform:translate(-50%,0)}}
+.intro-box p{margin:0 0 18px;line-height:1.9;font-size:clamp(15px,2.1vw,22px)}
+/* office */
+#office{background:#324c54}
+.office-ui{position:absolute;inset:0;z-index:4;pointer-events:none}
+.hud{position:absolute;top:68px;left:14px;pointer-events:auto;background:rgba(23,36,50,.9);border:3px solid #e1c488;box-shadow:3px 3px 0 rgba(8,15,23,.85);padding:10px 12px;min-width:196px}
+.hud strong{display:block;font-size:14px;margin-bottom:4px}
+.hud .hint{font-size:11px;color:#cfd6d4}
+.progress{display:flex;gap:5px;margin-top:8px}
+.pip{width:18px;height:11px;border:1px solid #d9c49d;background:#425061}
+.pip.fill{background:linear-gradient(180deg,#9fd7b2,#68a17f)}
+.instruction{position:absolute;right:14px;bottom:14px;max-width:64%;pointer-events:auto;background:rgba(18,31,44,.88);border:2px solid #c8aa77;color:#fcf2da;padding:7px 11px;font-size:12px;text-align:right;box-shadow:3px 3px 0 rgba(8,15,23,.75)}
+.sprite-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
+.sprite{position:absolute;display:block;filter:blur(.65px) drop-shadow(2px 4px 2px rgba(0,0,0,.20));opacity:.97}
+.sprite svg{width:100%;height:100%;display:block;image-rendering:auto;shape-rendering:geometricPrecision}
+.item-icon{position:absolute;display:block;filter:drop-shadow(3px 3px 0 rgba(0,0,0,.20));pointer-events:none}
+.item-icon svg{width:100%;height:100%;display:block}
+.hotspot{position:absolute;z-index:8;background:transparent;border:2px solid transparent;border-radius:6px;min-width:42px;min-height:42px;touch-action:manipulation;transition:all .14s ease}
+.hotspot:hover,.hotspot:focus-visible{background:rgba(255,239,181,.14);border-color:#ffe6a7;box-shadow:0 0 0 2px rgba(0,0,0,.22),0 0 18px rgba(255,230,167,.35)}
+.hotspot:active{background:rgba(255,239,181,.2)}
+.hotspot.done:not(.npc)::after{content:'✓';position:absolute;top:4px;right:4px;padding:0 4px;font-size:12px;border:1px solid #fff3cb;background:#5f8f74;color:#fff}
+.hotspot .tip{position:absolute;left:50%;bottom:100%;transform:translate(-50%,-5px);white-space:nowrap;font-size:12px;color:#233245;background:#ffe7ac;border:2px solid #765a3e;padding:4px 6px;opacity:0;pointer-events:none;transition:opacity .12s ease}
+.hotspot:hover .tip,.hotspot:focus-visible .tip{opacity:1}
+.hotspot .check{display:none;position:absolute;top:-22px;left:50%;transform:translateX(-50%);min-width:30px;height:30px;line-height:24px;text-align:center;font-size:22px;font-weight:900;background:#5a9071;color:#fff;border:3px solid #f7e3ab;box-shadow:2px 2px 0 #122030}
+.hotspot.done .check{display:block}
+.hotspot.door-open{animation:doorPulse 1.3s infinite;border-color:#f6df9e}
+@keyframes doorPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,225,160,.35)}50%{box-shadow:0 0 0 3px rgba(255,225,160,.18),0 0 18px rgba(255,225,160,.28)}}
+/* lunch reward on window-side round table */
+.lunch-display{position:absolute;z-index:9;left:64%;top:24%;width:8%;height:10%;pointer-events:none;filter:drop-shadow(3px 4px 0 rgba(0,0,0,.23));animation:mealArrive .35s steps(3,end) both}
+.lunch-display svg{width:100%;height:100%}
+.steam{position:absolute;bottom:74%;width:5px;height:20px;background:linear-gradient(0deg,transparent,#fffaf0 35%,#e1f7ee 75%,transparent);opacity:0;animation:steamRise 2s linear infinite}
+.steam-one{left:30%}.steam-two{left:53%;animation-delay:.55s}.steam-three{left:70%;animation-delay:1.1s}
+@keyframes steamRise{0%{transform:translateY(10px);opacity:0}25%{opacity:.8}75%{opacity:.52}100%{transform:translateY(-26px);opacity:0}}
+@keyframes mealArrive{from{transform:scale(.6);opacity:.3}to{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.steam{animation:none;opacity:.65;transform:translateY(-8px)}}
+/* dialog */
+.modal-wrap{position:absolute;inset:0;z-index:40;display:none;align-items:flex-end;justify-content:center;padding:16px 16px 22px;background:rgba(7,14,25,.45)}
+.modal-wrap.show{display:flex}
+.modal{position:relative;width:min(840px,100%);max-height:min(78%,560px);overflow:auto;background:linear-gradient(180deg,#22364a,#203247);border:4px solid #f0d89b;box-shadow:0 0 0 3px #132131,8px 8px 0 rgba(6,12,20,.82);padding:18px 20px 18px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:8px;border-bottom:2px dashed #7f97a1;color:#f4dfab}
+.modal-header strong{font-size:20px}
+.close{min-width:40px;height:36px;background:#445a72;border-color:#b5a280}
+.dialog-text{margin:18px 0 14px;min-height:74px;line-height:1.9;font-size:clamp(16px,2.1vw,22px);white-space:pre-wrap}
+.skip{background:transparent;border:0;color:#c7d6d9;text-decoration:underline;padding:4px 0;font-size:12px}
+.choices{display:grid;gap:9px}
+.choice{text-align:left;line-height:1.7;padding:9px 12px;background:linear-gradient(180deg,#3a5670,#314b63);border-color:#b8c3c1}
+.dialog-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.dialog-portrait{display:none;position:absolute;right:22px;bottom:100%;width:118px;height:140px;pointer-events:none}
+.modal-wrap.npc-dialog .dialog-portrait{display:block}
+.dialog-portrait svg{width:100%;height:100%;display:block;image-rendering:auto;shape-rendering:geometricPrecision;filter:blur(.45px) drop-shadow(3px 4px 2px rgba(0,0,0,.3))}
+/* ending */
+#ending:not(.active){display:none}
+#ending{display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 38%,#4a6168,#1a2a3d 70%)}
+.ending-wrap{width:min(760px,94%);padding:28px 20px 30px;border:4px solid #f0d694;background:rgba(23,36,50,.9);box-shadow:0 0 0 3px #11202e,8px 8px 0 rgba(8,14,21,.78)}
+.stars{font-size:clamp(34px,7vw,68px);letter-spacing:10px;color:#f7d989;text-shadow:0 4px 0 #243a50;animation:twinkle 1.9s infinite alternate}
+@keyframes twinkle{to{opacity:.5;transform:translateY(-2px)}}
+#ending .sub{font-size:13px;letter-spacing:2px;margin-top:3px}
+#ending h1{margin:10px 0 10px;font-size:clamp(28px,5.2vw,52px);line-height:1.3;color:#ffe7a5;text-shadow:0 4px 0 #22384d}
+#ending p{margin:0 0 20px;font-size:clamp(16px,2.3vw,24px);line-height:1.8}
+.end-note{display:none;margin-top:16px;font-size:22px;font-weight:900;color:#e7d6ab;border:3px double #d8bb7b;padding:12px 16px}
+.end-note.show{display:block}
+.tagline{margin-top:14px;font-size:11px;color:#d5c3a18f}
+/* responsive */
+@media(max-width:740px){
+  .app{padding:0}
+  .game{width:100%;height:100dvh;border:0;box-shadow:none}
+  .topbar{padding:calc(env(safe-area-inset-top) + 8px) 10px 8px}
+  .brand{font-size:13px}
+  .sub{font-size:10px}
+  .tool{padding:5px 7px;font-size:12px;min-height:34px}
+  .intro-title{top:5%;font-size:clamp(25px,7.5vw,38px)}
+  .intro-box{bottom:11%;padding:16px 14px}
+  .hud{top:56px;left:8px;min-width:0;padding:7px 8px}
+  .hud strong{font-size:11px}
+  .hud .hint{font-size:10px}
+  .pip{width:12px;height:7px}
+  .instruction{right:8px;bottom:8px;max-width:76%;padding:5px 7px;font-size:10px}
+  .modal-wrap{padding:10px 8px max(12px,env(safe-area-inset-bottom))}
+  .modal{padding:12px 13px 14px;max-height:76%;border-width:3px}
+  .modal-header strong{font-size:17px}
+  .dialog-text{min-height:68px;margin:14px 0 11px}
+  .dialog-portrait{right:4px;width:78px;height:96px}
+  .hotspot .tip{display:none}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<main class="game" aria-label="重生之我是蕭老思的學生互動遊戲">
+
+<section class="screen active" id="intro">
+  <div class="scene-art" aria-hidden="true">
+    <svg viewBox="0 0 1000 720" class="pixel" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="px" width="14" height="14" patternUnits="userSpaceOnUse">
+          <path d="M0 13H14" stroke="#87b0b8" opacity=".18"/>
+          <path d="M13 0V14" stroke="#87b0b8" opacity=".18"/>
+        </pattern>
+      </defs>
+      <rect width="1000" height="720" fill="#98c4d0"/>
+      <rect width="1000" height="720" fill="url(#px)"/>
+      <g>
+        <rect y="420" width="1000" height="300" fill="#769781"/>
+        <rect y="515" width="1000" height="205" fill="#b4a188"/>
+        <path d="M0 503H1000" stroke="#9b8768" stroke-width="8" opacity=".55"/>
+      </g>
+      <!-- mountains -->
+      <path d="M0 405 140 280 250 380 380 235 540 372 700 255 890 390 1000 330 1000 420 0 420Z" fill="#799aa0"/>
+      <path d="M0 425 140 335 260 401 392 293 528 389 722 318 1000 404 1000 440 0 440Z" fill="#89afb2"/>
+      <!-- trees -->
+      <g>
+        <rect x="18" y="270" width="150" height="190" fill="#658a6d"/>
+        <rect x="45" y="222" width="24" height="250" fill="#405b4e"/>
+        <rect x="796" y="252" width="176" height="204" fill="#5c8268"/>
+        <rect x="902" y="207" width="24" height="260" fill="#3a5347"/>
+        <rect x="54" y="294" width="112" height="22" fill="#57745f"/>
+        <rect x="798" y="286" width="160" height="24" fill="#507060"/>
+      </g>
+      <!-- road -->
+      <path d="M355 720 435 505H565L650 720" fill="#d8c7a3"/>
+      <path d="M402 720 460 520H540L598 720" fill="#e9d9b4"/>
+      <!-- school gate building -->
+      <g>
+        <rect x="174" y="287" width="652" height="232" fill="#dfd4b4" stroke="#405665" stroke-width="10"/>
+        <rect x="202" y="318" width="598" height="180" fill="#b8c7bd" stroke="#48616b" stroke-width="6"/>
+        <rect x="228" y="330" width="84" height="154" fill="#5f7e82"/>
+        <rect x="328" y="330" width="84" height="154" fill="#69878c"/>
+        <rect x="428" y="330" width="84" height="154" fill="#57757b"/>
+        <rect x="528" y="330" width="84" height="154" fill="#618085"/>
+        <rect x="628" y="330" width="84" height="154" fill="#58767c"/>
+        <rect x="728" y="330" width="52" height="154" fill="#66868a"/>
+        <rect x="141" y="260" width="716" height="36" fill="#b39e7c" stroke="#405665" stroke-width="7"/>
+        <rect x="300" y="205" width="396" height="72" fill="#e7d9b7" stroke="#405665" stroke-width="7"/>
+        <text x="498" y="249" text-anchor="middle" font-size="32" font-weight="900" fill="#314652">國 立 政 治 大 學</text>
+        <rect x="344" y="490" width="312" height="48" fill="#ceb98f"/>
+        <rect x="468" y="496" width="64" height="96" fill="#4b666a"/>
+        <rect x="488" y="514" width="22" height="66" fill="#b1c3b2"/>
+        <g fill="#f1dd9a">
+          <rect x="143" y="328" width="20" height="164"/>
+          <rect x="838" y="328" width="20" height="164"/>
+        </g>
+        <g fill="#9f8b6a"><rect x="118" y="260" width="32" height="272"/><rect x="850" y="260" width="32" height="272"/></g>
+      </g>
+      <!-- clouds -->
+      <g fill="#d5edf3" opacity=".85">
+        <rect x="112" y="100" width="110" height="28"/><rect x="140" y="84" width="66" height="22"/>
+        <rect x="708" y="112" width="124" height="28"/><rect x="742" y="92" width="58" height="22"/>
+      </g>
+    </svg>
+  </div>
+  <div class="intro-title"><small>NCCU 911 OFFICE STORY</small>重生之我是蕭老思的學生</div>
+  <div class="intro-box">
+    <p>重生你是蕭老思的學生，<br>今天是普通的上學日，你如往常前往 911 辦公室。</p>
+    <button class="primary" id="startBtn">進入 911 辦公室</button>
+  </div>
+</section>
+
+<section class="screen" id="office">
+  <div class="topbar">
+    <div>
+      <div class="brand">《重生之我是蕭老思的學生》</div>
+      <div class="sub">911 辦公室｜與 NPC 對話、準備上課道具、完成完美日常</div>
+    </div>
+    <div class="tools">
+      <button class="tool" id="questBtn">任務 0/6</button>
+      <button class="tool" id="muteBtn">♫ 音效</button>
+    </div>
+  </div>
+
+  <div class="scene-art" aria-hidden="true">
+    <svg viewBox="0 0 1000 720" class="office-drawing" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <pattern id="softTiles" width="54" height="54" patternUnits="userSpaceOnUse"><rect width="54" height="54" fill="#d9c7a8"/><path d="M0 53H54M53 0V54" stroke="#cbb592" stroke-width="2"/></pattern>
+        <linearGradient id="dayWindow" x2="0" y2="1"><stop stop-color="#c9e8ec"/><stop offset="1" stop-color="#9fbfba"/></linearGradient>
+      </defs>
+      <rect width="1000" height="720" fill="#d6cab2"/>
+      <rect x="0" y="145" width="1000" height="575" fill="url(#softTiles)"/>
+      <path d="M0 145H1000" stroke="#ae9b7d" stroke-width="12"/>
+      <!-- 玻璃落地窗與窗外校園 -->
+      <rect x="16" y="10" width="968" height="140" fill="#729ca1" stroke="#667d7e" stroke-width="9"/>
+      <rect x="30" y="22" width="940" height="108" fill="url(#dayWindow)"/>
+      <path d="M30 110 148 81 225 105 346 77 450 109 586 79 711 111 839 80 970 105V130H30Z" fill="#a2b9a0" opacity=".8"/>
+      <path d="M260 18V140M510 18V140M760 18V140" stroke="#e7e6d6" stroke-width="10"/>
+      <path d="M30 70H970" stroke="#e3e8df" stroke-width="5" opacity=".65"/>
+      <!-- 左側隱藏櫃與透明櫃 -->
+      <rect x="10" y="190" width="108" height="285" fill="#c5b69a" stroke="#9d886d" stroke-width="7"/>
+      <path d="M20 276H108M20 365H108" stroke="#b1a083" stroke-width="4"/>
+      <circle cx="88" cy="238" r="3" fill="#958268"/><circle cx="88" cy="327" r="3" fill="#958268"/>
+      <rect x="10" y="478" width="108" height="120" fill="#b4d0d0" fill-opacity=".72" stroke="#77989a" stroke-width="7"/>
+      <path d="M58 484V593M16 544H111" stroke="#729599" stroke-width="4"/>
+      <!-- 左下開放零食櫃 -->
+      <rect x="130" y="616" width="290" height="76" fill="#c4a67d" stroke="#86694a" stroke-width="8"/>
+      <rect x="141" y="630" width="268" height="49" fill="#b9976f"/>
+      <path d="M222 630V681M317 630V681" stroke="#816649" stroke-width="5"/>
+      <!-- 中間縱向長桌及椅子 -->
+      <rect x="296" y="260" width="312" height="316" rx="8" fill="#8e7153" opacity=".23"/>
+      <rect x="286" y="245" width="310" height="315" rx="5" fill="#bd9567" stroke="#83644a" stroke-width="9"/>
+      <rect x="299" y="258" width="284" height="289" fill="#d5b081"/>
+      <path d="M310 266V540M572 266V540" stroke="#e5c594" stroke-width="5" opacity=".65"/>
+      <path d="M318 326H564" stroke="#b8916e" stroke-width="3" opacity=".5"/>
+      <g fill="#68747a" stroke="#52616b" stroke-width="5">
+       <ellipse cx="252" cy="355" rx="33" ry="37"/><ellipse cx="252" cy="494" rx="33" ry="37"/>
+       <ellipse cx="643" cy="320" rx="33" ry="37"/><ellipse cx="643" cy="437" rx="33" ry="37"/><ellipse cx="643" cy="538" rx="33" ry="37"/>
+      </g>
+      <!-- 窗前兩組圓桌與高腳椅 -->
+      <g fill="#b99a71" stroke="#7f684e" stroke-width="7"><ellipse cx="680" cy="210" rx="65" ry="36"/><ellipse cx="867" cy="210" rx="60" ry="36"/></g>
+      <g fill="#756657"><rect x="667" y="243" width="22" height="36"/><rect x="854" y="243" width="22" height="36"/></g>
+      <g fill="#6e7b78" stroke="#4b5d5a" stroke-width="5"><ellipse cx="625" cy="272" rx="23" ry="17"/><ellipse cx="742" cy="269" rx="23" ry="17"/><ellipse cx="818" cy="271" rx="23" ry="17"/><ellipse cx="927" cy="265" rx="23" ry="17"/></g>
+      <!-- 右側白板 -->
+      <rect x="949" y="180" width="42" height="345" fill="#f2f5ef" stroke="#91a8aa" stroke-width="7"/>
+      <path d="M957 282H983M957 384H983" stroke="#d5e3e1" stroke-width="4"/>
+      <!-- 右下向內開的門 -->
+      <path d="M839 716H986V565H839Z" fill="#849a9a" stroke="#637a7a" stroke-width="8"/>
+      <path d="M839 715V583M839 715A132 132 0 0 1 970 583" fill="none" stroke="#986f51" stroke-width="7" stroke-dasharray="9 9"/>
+      <path d="M837 715L950 581" stroke="#b08964" stroke-width="14"/>
+      <!-- 溫暖窗光 -->
+      <path d="M330 150 510 150 675 610 520 610Z" fill="#fff0c7" opacity=".10"/>
+    </svg>
+  </div>
+
+  <div class="sprite-layer" aria-hidden="true">
+    <!-- Kajie - muted blazer, fine gold glasses, shoulder length silver hair -->
+    <div class="sprite" style="left:23.3%;top:24%;width:12.5%;height:26%;">
+      <svg viewBox="0 0 130 240" class="pixel" aria-hidden="true">
+        <rect x="16" y="151" width="102" height="62" fill="#566779"/><rect x="24" y="157" width="84" height="51" fill="#758b93"/>
+        <rect x="42" y="16" width="43" height="11" fill="#bfc3c2"/><rect x="33" y="25" width="63" height="11" fill="#dee0da"/>
+        <rect x="25" y="37" width="78" height="15" fill="#f0efe7"/><rect x="20" y="52" width="87" height="38" fill="#deddd7"/>
+        <rect x="29" y="76" width="70" height="16" fill="#f4eee2"/><rect x="36" y="85" width="60" height="46" fill="#edd8c3"/>
+        <rect x="24" y="91" width="13" height="57" fill="#d3d2cc"/><rect x="97" y="91" width="10" height="53" fill="#d8d8d0"/>
+        <rect x="42" y="100" width="18" height="13" fill="#f8e6cb"/><rect x="72" y="100" width="18" height="13" fill="#f8e6cb"/>
+        <path d="M37 98H60V115H37Z M70 98H94V115H70Z M60 105H70" fill="none" stroke="#b79b56" stroke-width="4"/>
+        <rect x="46" y="104" width="8" height="5" fill="#494746"/><rect x="78" y="104" width="8" height="5" fill="#494746"/>
+        <rect x="61" y="112" width="7" height="8" fill="#cfaa91"/><rect x="54" y="125" width="22" height="3" fill="#936e63"/>
+        <rect x="41" y="134" width="48" height="15" fill="#c7b7a0"/>
+        <rect x="27" y="148" width="80" height="52" fill="#86958e"/><rect x="37" y="148" width="25" height="17" fill="#a6aea0"/><rect x="66" y="148" width="29" height="18" fill="#7d8c85"/>
+        <rect x="18" y="162" width="19" height="39" fill="#819088"/><rect x="98" y="163" width="17" height="39" fill="#71827d"/>
+        <rect x="16" y="195" width="28" height="11" fill="#e2c7ad"/><rect x="97" y="196" width="24" height="11" fill="#e2c7ad"/>
+        <rect x="32" y="208" width="30" height="15" fill="#596774"/><rect x="69" y="208" width="30" height="15" fill="#56626f"/>
+        <rect x="23" y="221" width="37" height="8" fill="#443d39"/><rect x="72" y="221" width="37" height="8" fill="#443d39"/>
+        <rect x="112" y="158" width="18" height="40" fill="#425363"/><rect x="115" y="161" width="12" height="32" fill="#89aeb4"/>
+      </svg>
+    </div>
+    <!-- Teacher sits beside the near-window round table, with chair back behind him -->
+    <div class="sprite teacher-seated" style="left:69%;top:14%;width:12.5%;height:25%;">
+      <svg viewBox="0 0 150 230" class="pixel" aria-hidden="true">
+        <rect x="28" y="110" width="98" height="94" fill="#665b51"/><rect x="36" y="118" width="82" height="79" fill="#9d8772"/>
+        <rect x="54" y="14" width="47" height="8" fill="#c0c5c4"/><rect x="43" y="22" width="63" height="12" fill="#e3e3de"/>
+        <rect x="30" y="34" width="82" height="17" fill="#dedfda"/><rect x="28" y="51" width="87" height="19" fill="#eff0e9"/>
+        <rect x="39" y="67" width="65" height="18" fill="#e5d4c7"/><rect x="41" y="83" width="63" height="39" fill="#eddac9"/>
+        <rect x="28" y="65" width="12" height="34" fill="#c8cbc7"/><rect x="104" y="65" width="12" height="29" fill="#d9d9d2"/>
+        <rect x="44" y="90" width="23" height="20" fill="none" stroke="#27323b" stroke-width="4"/><rect x="79" y="90" width="23" height="20" fill="none" stroke="#27323b" stroke-width="4"/>
+        <rect x="67" y="95" width="12" height="4" fill="#27323b"/>
+        <rect x="52" y="97" width="7" height="6" fill="#40515d"/><rect x="87" y="97" width="7" height="6" fill="#40515d"/>
+        <rect x="68" y="109" width="7" height="7" fill="#d1a68c"/><rect x="61" y="119" width="24" height="3" fill="#957368"/>
+        <rect x="51" y="123" width="43" height="15" fill="#e3cbb5"/>
+        <rect x="28" y="139" width="92" height="59" fill="#233746"/><rect x="42" y="143" width="19" height="45" fill="#314c61"/><rect x="81" y="143" width="25" height="45" fill="#2c4051"/>
+        <path d="M58 139H88L79 182H66Z" fill="#f5f0e6"/><rect x="71" y="148" width="7" height="37" fill="#53637a"/>
+        <rect x="18" y="159" width="16" height="36" fill="#293c4d"/><rect x="117" y="159" width="16" height="34" fill="#263747"/>
+        <rect x="14" y="187" width="23" height="12" fill="#e3c5aa"/><rect x="116" y="185" width="23" height="12" fill="#e3c5aa"/>
+        <rect x="38" y="197" width="76" height="21" fill="#263543"/><rect x="38" y="213" width="28" height="10" fill="#1b2934"/><rect x="90" y="213" width="28" height="10" fill="#1b2934"/>
+      </svg>
+    </div>
+    <div id="lunchDisplay" class="lunch-display hidden" aria-label="已準備好的午餐" role="img">
+      <div class="steam steam-one"></div><div class="steam steam-two"></div><div class="steam steam-three"></div>
+      <svg viewBox="0 0 110 90" class="pixel"><ellipse cx="55" cy="61" rx="43" ry="15" fill="#6c513e" opacity=".45"/><rect x="15" y="35" width="84" height="25" rx="2" fill="#e6d4bb" stroke="#704f3f" stroke-width="5"/><rect x="23" y="26" width="68" height="23" fill="#d7e1cf" stroke="#86694b" stroke-width="4"/><rect x="29" y="29" width="54" height="12" fill="#a9b27b"/><rect x="34" y="31" width="13" height="5" fill="#f6d09a"/><rect x="54" y="32" width="19" height="4" fill="#f8e6c0"/></svg>
+    </div>
+    <!-- items -->
+    <div class="item-icon" style="left:50%;top:49%;width:4.3%;height:7%;">
+      <svg viewBox="0 0 60 60" class="pixel"><rect x="10" y="20" width="32" height="24" fill="#efe8d8" stroke="#7c6755" stroke-width="4"/><rect x="42" y="26" width="8" height="12" fill="#efe8d8" stroke="#7c6755" stroke-width="4"/><rect x="14" y="14" width="18" height="6" fill="#cdd7db"/></svg>
+    </div>
+    <div class="item-icon" style="left:36%;top:42%;width:8%;height:9%;">
+      <svg viewBox="0 0 90 60" class="pixel"><rect x="10" y="8" width="62" height="34" fill="#38454f" stroke="#222e35" stroke-width="4"/><rect x="16" y="14" width="50" height="22" fill="#7aa0aa"/><rect x="28" y="44" width="24" height="6" fill="#29333c"/><rect x="22" y="50" width="36" height="6" fill="#54636c"/></svg>
+    </div>
+    <div class="item-icon" style="left:2%;top:37%;width:7.3%;height:14%;">
+      <svg viewBox="0 0 70 120" class="pixel"><rect x="6" y="6" width="58" height="108" fill="#c8b28f" stroke="#8c7255" stroke-width="6"/><path d="M35 10V110M6 42H64M6 76H64" stroke="#9c8164" stroke-width="4"/></svg>
+    </div>
+    <div class="item-icon" style="left:13%;top:11%;width:9%;height:12%;">
+      <svg viewBox="0 0 80 90" class="pixel"><rect x="32" y="54" width="16" height="24" fill="#6d5640"/><rect x="20" y="38" width="40" height="24" fill="#5b845f"/><rect x="14" y="24" width="52" height="24" fill="#6b956d"/><rect x="22" y="8" width="36" height="22" fill="#7ba67c"/></svg>
+    </div>
+    <div class="item-icon" style="left:17%;top:82%;width:8.7%;height:8%;">
+      <svg viewBox="0 0 80 50" class="pixel"><rect x="8" y="24" width="20" height="12" fill="#e3b760"/><rect x="32" y="18" width="18" height="18" fill="#bf704d"/><rect x="54" y="22" width="18" height="14" fill="#91b79b"/></svg>
+    </div>
+  </div>
+
+  <div class="office-ui">
+    <div class="hud" aria-live="polite">
+      <strong id="hudText">課前準備 0 / 6</strong>
+      <div class="hint">與兩位角色對話，並準備三項上課用品。</div>
+      <div class="progress" id="pips"></div>
+    </div>
+    <div class="instruction" id="instruction">點擊角色、杯子、電腦、名牌櫃與門，完成今天的課前準備與午餐任務。</div>
+  </div>
+
+  <!-- Hotspots -->
+  <button class="hotspot npc" data-kind="npc" data-id="kajie" style="left:23%;top:23%;width:13%;height:28%" aria-label="與卡姐對話"><span class="check">✓</span><span class="tip">卡姐</span></button>
+  <button class="hotspot npc" data-kind="npc" data-id="teacher" style="left:68%;top:14%;width:15%;height:28%" aria-label="與蕭老思對話"><span class="check">✓</span><span class="tip">蕭老思</span></button>
+  <button class="hotspot" data-kind="item" data-id="cup" style="left:49.5%;top:48%;width:6%;height:10%" aria-label="老師的杯子"><span class="tip">老師的杯子</span></button>
+  <button class="hotspot" data-kind="item" data-id="computer" style="left:35%;top:41%;width:10%;height:11%" aria-label="老師的電腦"><span class="tip">老師的電腦</span></button>
+  <button class="hotspot" data-kind="item" data-id="plant" style="left:12%;top:8%;width:12%;height:18%" aria-label="植物"><span class="tip">植物</span></button>
+  <button class="hotspot" data-kind="item" data-id="nameplates" style="left:1%;top:34%;width:11%;height:22%" aria-label="櫃子裡的名牌"><span class="tip">名牌櫃</span></button>
+  <button class="hotspot" data-kind="item" data-id="snacks" style="left:14%;top:80%;width:15%;height:12%" aria-label="零食"><span class="tip">零食</span></button>
+  <button class="hotspot" data-kind="door" data-id="door" style="left:83%;top:78%;width:16%;height:20%" aria-label="離開辦公室"><span class="tip">離開辦公室</span></button>
+</section>
+
+<section class="screen" id="ending">
+  <div class="ending-wrap">
+    <div class="stars">✦ ✧ ✦</div>
+    <div class="sub">PERFECT ENDING</div>
+    <h1>又是完美的度過一天</h1>
+    <p>完美結局，所有事情都順利進行，你真棒</p>
+    <button class="primary" id="byeBtn">掰掰</button>
+    <div class="end-note" id="endNote">遊戲結束</div>
+    <div class="tagline">911 OFFICE · A PERFECTLY ORDINARY DAY</div>
+  </div>
+</section>
+
+<div class="modal-wrap" id="modalWrap">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dialogName">
+    <div class="dialog-portrait" id="portrait"></div>
+    <div class="modal-header"><strong id="dialogName">對話</strong><button class="close" id="closeDialog" aria-label="關閉">×</button></div>
+    <div class="dialog-text" id="dialogText"></div>
+    <button class="skip hidden" id="skipBtn">▼ 點擊立即顯示完整文字</button>
+    <div class="choices" id="choices"></div>
+    <div class="dialog-actions" id="dialogActions"></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const NPC={
+  teacher:{
+    name:'蕭老思',
+    intro:'午安，有什麼事情要跟我談的嗎？',
+    options:['沒有，目前沒有想法','有，想問問老師論文主題','有，需要處理專案上面的問題'],
+    replies:['怎麼可以沒有想法！！！','先給我你的3LL','先想論文主題'],
+    repeat:'先把今天上課前要準備的事情處理好。'
+  },
+  kajie:{
+    name:'卡姐',
+    intro:'午安，有什麼心事嗎？',
+    options:['沒有，最近很開心','有，論文主題有點煩惱','有，跟老師溝通上有點困難'],
+    replies:['非常好','可以先想想的3LL','不要想太多'],
+    repeat:'先把該準備的東西準備好，再去找老師吧。'
+  }
+};
+const ITEMS={
+  cup:{name:'老師的杯子',desc:'老思上課喜歡喝熱水，然而學生與老思都會忘記在課堂前準備',required:true,action:'拿取杯子'},
+  computer:{name:'老師的電腦',desc:'老思上課前需要學生幫忙佈置設備，需要閉眼就能裝好',required:true,action:'準備電腦'},
+  plant:{name:'植物',desc:'瑜倩老師的植物，不知道什麼時候才能被還回去',required:false},
+  nameplates:{name:'櫃子裡的名牌',desc:'質性研究學生們的名牌，需要先佈置',required:true,action:'拿取名牌'},
+  snacks:{name:'零食',desc:'蕭老思學生的精神糧食',required:false}
+};
+const state={lunch:{started:false,teacherResponse:null,selectedMeal:null,spice:null,toppings:null,completed:false,servedMeal:null,errorVisible:false},scene:'intro',muted:false,teacherFinalSaid:false,npcDone:{kajie:false,teacher:false},itemDone:{cup:false,computer:false,nameplates:false},dialogOpen:false};
+const $=id=>document.getElementById(id);
+const modal=$('modalWrap'),dialogName=$('dialogName'),dialogText=$('dialogText'),choices=$('choices'),dialogActions=$('dialogActions'),skipBtn=$('skipBtn'),portrait=$('portrait');
+let audioCtx=null,typingTimer=null,typing=false,typingFull='',typingAfter=null;
+
+function beep(kind='tap'){
+  if(state.muted) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    const now=audioCtx.currentTime;
+    osc.type = kind==='typing' ? 'square' : kind==='win' ? 'triangle' : 'square';
+    osc.frequency.value = kind==='typing' ? 430 : kind==='win' ? 660 : 510;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(kind==='typing'?0.013:0.04, now+0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind==='win'?0.22:0.07));
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + (kind==='win'?0.23:0.08));
+  }catch(err){}
+}
+
+function showScene(id){
+  document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('active',el.id===id));
+  state.scene=id;
+}
+function progressCount(){
+  return Object.values(state.npcDone).filter(Boolean).length + Object.values(state.itemDone).filter(Boolean).length + Number(state.lunch.completed);
+}
+function coreDone(){return progressCount()===6}
+function canExit(){return coreDone() && state.teacherFinalSaid}
+function updateUI(){
+  const n=progressCount();
+  $('hudText').textContent=`課前準備 ${n} / 6`;
+  $('questBtn').textContent=`任務 ${n}/6`;
+  $('pips').innerHTML = Array.from({length:6}, (_,i)=>`<span class="pip ${i<n?'fill':''}"></span>`).join('');
+  document.querySelectorAll('.hotspot').forEach(el=>{
+    const {kind,id}=el.dataset;
+    if(kind==='npc') el.classList.toggle('done', !!state.npcDone[id]);
+    if(kind==='item' && state.itemDone[id]) el.classList.add('done');
+    if(kind==='door') el.classList.toggle('door-open', canExit());
+  });
+  $('lunchDisplay').classList.toggle('hidden', !state.lunch.servedMeal);
+  $('lunchDisplay').setAttribute('aria-label',state.lunch.servedMeal==='gengdawangSet'?'焿大王套餐，冒著熱氣':'素食粥，冒著熱氣');
+  $('instruction').textContent = canExit() ? '出口已開放！點擊右下角的門離開辦公室。' : coreDone() ? '東西都準備好了！再去找一次蕭老思。' : '點擊人物與道具，也別忘了詢問老師今天的午餐。';
+}
+
+function clearTyping(){ if(typingTimer){ clearInterval(typingTimer); typingTimer=null; } typing=false; }
+function finishTyping(){
+  if(!typing) return;
+  clearTyping();
+  dialogText.textContent=typingFull;
+  skipBtn.classList.add('hidden');
+  if(typingAfter){ const cb=typingAfter; typingAfter=null; cb(); }
+}
+function typeText(text, after){
+  clearTyping();
+  typingFull=text; typingAfter=after||null;
+  dialogText.textContent=''; choices.innerHTML=''; dialogActions.innerHTML='';
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ dialogText.textContent=text; skipBtn.classList.add('hidden'); if(typingAfter){ const cb=typingAfter; typingAfter=null; cb(); } return; }
+  skipBtn.classList.remove('hidden');
+  const chars=Array.from(text); let i=0; typing=true;
+  typingTimer=setInterval(()=>{
+    i++; dialogText.textContent = chars.slice(0,i).join('');
+    if(i%3===0) beep('typing');
+    if(i>=chars.length) finishTyping();
+  }, 32);
+}
+function addButton(label, fn, cls='primary', target=dialogActions){
+  const b=document.createElement('button'); b.className=cls; b.textContent=label; b.addEventListener('click', ()=>{beep(); fn();}); target.appendChild(b); return b;
+}
+function getPortraitSVG(id){
+  if(id==='teacher'){
+    return `<svg viewBox="0 0 120 140" class="pixel"><rect x="42" y="8" width="34" height="10" fill="#cacac8"/><rect x="30" y="18" width="56" height="14" fill="#ecece9"/><rect x="24" y="32" width="68" height="18" fill="#efeee9"/><rect x="28" y="46" width="60" height="20" fill="#f5eadf"/><rect x="30" y="62" width="56" height="28" fill="#f5eadf"/><rect x="36" y="72" width="10" height="8" fill="#374049"/><rect x="74" y="72" width="10" height="8" fill="#374049"/><rect x="30" y="70" width="20" height="4" fill="#10181f"/><rect x="70" y="70" width="20" height="4" fill="#10181f"/><rect x="53" y="82" width="12" height="4" fill="#946957"/><rect x="24" y="92" width="68" height="40" fill="#26394b"/><rect x="48" y="92" width="22" height="28" fill="#f6f0e4"/></svg>`;
+  }
+  if(id==='kajie'){
+    return `<svg viewBox="0 0 120 140" class="pixel"><rect x="38" y="8" width="36" height="10" fill="#d9d7d2"/><rect x="28" y="18" width="56" height="14" fill="#f0efea"/><rect x="20" y="32" width="72" height="18" fill="#f2f1ec"/><rect x="22" y="46" width="68" height="18" fill="#f4eadb"/><rect x="26" y="60" width="60" height="28" fill="#f4eadb"/><rect x="34" y="70" width="10" height="8" fill="#4b382c"/><rect x="74" y="70" width="10" height="8" fill="#4b382c"/><rect x="28" y="68" width="18" height="4" fill="#cda866"/><rect x="72" y="68" width="18" height="4" fill="#cda866"/><rect x="48" y="80" width="14" height="4" fill="#8d6251"/><rect x="18" y="92" width="84" height="38" fill="#71889d"/></svg>`;
+  }
+  return '';
+}
+function openDialog(title,type,id=''){
+  modal.classList.add('show'); state.dialogOpen=true;
+  modal.classList.toggle('npc-dialog', type==='npc');
+  dialogName.textContent=title;
+  portrait.innerHTML = type==='npc' ? getPortraitSVG(id) : '';
+  $('closeDialog').focus();
+}
+function closeDialog(){
+  clearTyping();
+  modal.classList.remove('show','npc-dialog');
+  skipBtn.classList.add('hidden');
+  state.dialogOpen=false;
+  updateUI();
+}
+function npcDialog(id){
+  const npc=NPC[id];
+  openDialog(npc.name,'npc',id);
+  if(id==='teacher' && state.npcDone.teacher && coreDone() && !state.teacherFinalSaid){
+    typeText('好，東西都準備好了，準備上課。', ()=>{
+      addButton('好的，老師！', ()=>{ state.teacherFinalSaid=true; closeDialog(); beep('win'); });
+    });
+    return;
+  }
+  if(state.npcDone[id]){
+    if(id==='teacher' && !state.lunch.completed){
+      typeText(npc.repeat, ()=>{
+        addButton('老師今天要吃什麼？', lunchDialog);
+        addButton('先不打擾老師', closeDialog,'secondary');
+      });
+    } else {
+      typeText(npc.repeat, ()=> addButton('結束對話', closeDialog));
+    }
+    return;
+  }
+  typeText(npc.intro, ()=>{
+    npc.options.forEach((opt,i)=>{
+      addButton(`${'ABC'[i]}. ${opt}`, ()=>{
+        typeText(npc.replies[i], ()=>{
+          addButton('結束對話', ()=>{ state.npcDone[id]=true; closeDialog(); beep('win'); });
+        });
+      }, 'choice', choices);
+    });
+  });
+}
+function lunchDialog(){
+  // A stable result: random draw only once when the explicit lunch topic is first selected.
+  const l=state.lunch;
+  if(!l.started){
+    l.started=true;
+    const possible=['busy','usual','different'];
+    l.teacherResponse=possible[Math.floor(Math.random()*possible.length)];
+  }
+  openDialog('蕭老思 · 今天的午餐','npc','teacher');
+  const lines={busy:'太忙了吃不了',usual:'跟過往一樣',different:'換個口味'};
+  typeText(lines[l.teacherResponse],()=>{
+    if(l.teacherResponse==='busy'){
+      l.completed=true;l.servedMeal=null;
+      updateUI();
+      addButton('了解，老師先忙',()=>{closeDialog();beep('win')});
+    }else if(l.teacherResponse==='usual'){
+      addButton('開始選擇餐點', lunchMealChoices);
+    }else{
+      addButton('開始選擇餐點', lunchDifferentChoices);
+    }
+  });
+}
+function lunchComplete(meal){
+  const l=state.lunch;
+  l.completed=true;l.servedMeal=meal;l.errorVisible=false;
+  updateUI();beep('win');
+  typeText(meal==='gengdawangSet'?'焿大王套餐準備好了！窗邊的圓桌飄起熱騰騰的香氣。':'素食粥（不加辣、不加配料）準備好了！窗邊的圓桌冒出熱氣。',()=>{
+    addButton('返回辦公室',closeDialog);
+  });
+}
+function lunchError(back){
+  state.lunch.errorVisible=true;
+  typeText('選錯了，重新選擇',()=>addButton('重新選擇',back));
+}
+function lunchMealChoices(){
+  typeText('請選擇老師今天的午餐。',()=>{
+    addButton('焿大王套餐',()=>{state.lunch.selectedMeal='gengdawangSet';lunchComplete('gengdawangSet')},'choice',choices);
+    addButton('其他餐點',()=>{state.lunch.selectedMeal='other';lunchError(lunchMealChoices)},'choice',choices);
+  });
+}
+function lunchDifferentChoices(){
+  state.lunch.selectedMeal=null;state.lunch.spice=null;state.lunch.toppings=null;
+  lunchPickMeal();
+}
+function lunchPickMeal(){
+  typeText('老師今天想換個口味。先選餐點：',()=>{
+    addButton('焿大王之外的素食粥',()=>{state.lunch.selectedMeal='vegetarianPorridge';lunchPickSpice()},'choice',choices);
+    addButton('其他餐點',()=>{state.lunch.selectedMeal='other';lunchError(lunchDifferentChoices)},'choice',choices);
+  });
+}
+function lunchPickSpice(){
+  typeText('素食粥要加辣嗎？',()=>{
+    addButton('不加辣',()=>{state.lunch.spice='none';lunchPickToppings()},'choice',choices);
+    addButton('加辣',()=>{state.lunch.spice='spicy';lunchError(lunchDifferentChoices)},'choice',choices);
+  });
+}
+function lunchPickToppings(){
+  typeText('素食粥需要加配料嗎？',()=>{
+    addButton('不加配料',()=>{state.lunch.toppings='none';if(state.lunch.selectedMeal==='vegetarianPorridge'&&state.lunch.spice==='none')lunchComplete('vegetarianPorridge');else lunchError(lunchDifferentChoices)},'choice',choices);
+    addButton('加配料',()=>{state.lunch.toppings='added';lunchError(lunchDifferentChoices)},'choice',choices);
+  });
+}
+function itemDialog(id){
+  const item=ITEMS[id];
+  openDialog(item.name,'item',id);
+  typeText(item.desc, ()=>{
+    if(item.required && !state.itemDone[id]) addButton(item.action, ()=>{ state.itemDone[id]=true; closeDialog(); beep('win'); });
+    else if(item.required) addButton('已準備完成 ✓', closeDialog, 'secondary');
+    addButton('關閉', closeDialog, 'secondary');
+  });
+}
+function questDialog(){
+  openDialog('課前準備任務','quest');
+  const lines=[
+    ['與卡姐對話', state.npcDone.kajie],
+    ['與蕭老思對話', state.npcDone.teacher],
+    ['拿取老師的杯子', state.itemDone.cup],
+    ['準備老師的電腦', state.itemDone.computer],
+    ['取得學生名牌', state.itemDone.nameplates],
+    ['詢問並完成老師午餐',state.lunch.completed]
+  ].map(([t,done])=>`${done?'✓':'□'} ${t}`).join('\n');
+  typeText(lines, ()=> addButton('返回辦公室', closeDialog));
+}
+function doorDialog(){
+  if(canExit()) { beep('win'); showScene('ending'); return; }
+  openDialog('辦公室出口','door');
+  const msg = coreDone() ? '出門前，還需要聽蕭老思宣布上課。' : '好像還有上課前的事情沒有完成。';
+  typeText(msg, ()=> addButton('繼續準備', closeDialog));
+}
+
+// events
+  document.querySelectorAll('.hotspot').forEach(btn=>btn.addEventListener('click', ()=>{
+    if(state.dialogOpen) return;
+    beep();
+    const kind=btn.dataset.kind, id=btn.dataset.id;
+    if(kind==='npc') npcDialog(id);
+    else if(kind==='item') itemDialog(id);
+    else doorDialog();
+  }));
+  $('startBtn').addEventListener('click', ()=>{ beep(); showScene('office'); updateUI(); });
+  $('questBtn').addEventListener('click', ()=>{ beep(); questDialog(); });
+  $('muteBtn').addEventListener('click', ()=>{ state.muted=!state.muted; $('muteBtn').textContent = state.muted ? '♪ 靜音' : '♫ 音效'; if(!state.muted) beep(); });
+  $('closeDialog').addEventListener('click', ()=>{ beep(); closeDialog(); });
+  skipBtn.addEventListener('click', ()=>{ beep(); finishTyping(); });
+  dialogText.addEventListener('click', finishTyping);
+  $('byeBtn').addEventListener('click', ()=>{ beep('win'); $('byeBtn').classList.add('hidden'); $('endNote').classList.add('show'); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && state.dialogOpen) closeDialog(); });
+  updateUI();
+})();
+</script>
+</body>
+</html>
